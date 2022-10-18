@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE abiword PUBLIC "-//ABISOURCE//DTD AWML 1.0 Strict//EN" "http://www.abisource.com/awml.dtd">
+<abiword template="false" xmlns:ct="http://www.abisource.com/changetracking.dtd" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:math="http://www.w3.org/1998/Math/MathML" xid-max="327" xmlns:dc="http://purl.org/dc/elements/1.1/" fileformat="1.1" xmlns:svg="http://www.w3.org/2000/svg" xmlns:awml="http://www.abisource.com/awml.dtd" xmlns="http://www.abisource.com/awml.dtd" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.0.4" xml:space="preserve" props="dom-dir:ltr; document-footnote-restart-section:0; document-endnote-type:numeric; document-endnote-place-enddoc:1; document-endnote-initial:1; lang:pt-BR; document-endnote-restart-section:0; document-footnote-restart-page:0; document-footnote-type:numeric; document-footnote-initial:1; document-endnote-place-endsection:0">
+<!-- ======================================================================== -->
+<!-- This file is an AbiWord document.                                        -->
+<!-- AbiWord is a free, Open Source word processor.                           -->
+<!-- More information about AbiWord is available at http://www.abisource.com/ -->
+<!-- You should not edit this file by hand.                                   -->
+<!-- ======================================================================== -->
+
+<metadata>
+<m key="abiword.generator">AbiWord</m>
+<m key="dc.format">application/x-abiword</m>
+</metadata>
+<rdf>
+</rdf>
+<styles>
+<s type="P" name="Normal" basedon="" followedby="Current Settings" props="font-family:Liberation Serif; margin-top:0pt; font-variant:normal; margin-left:0pt; text-indent:0in; widows:2; font-style:normal; font-weight:normal; text-decoration:none; color:000000; line-height:1.0; text-align:left; margin-bottom:0pt; text-position:normal; margin-right:0pt; bgcolor:transparent; font-size:12pt; font-stretch:normal"/>
+</styles>
+<pagesize pagetype="A4" orientation="portrait" width="210.000000" height="297.000000" units="mm" page-scale="1.000000"/>
+<section xid="1">
+<p style="Normal" xid="2" props="text-align:left; dom-dir:ltr">#include &lt;linux/init.h&gt;</p>
+<p style="Normal" xid="3" props="text-align:left; dom-dir:ltr">#include &lt;linux/module.h&gt;	/* THIS_MODULE macro */</p>
+<p style="Normal" xid="4" props="text-align:left; dom-dir:ltr">#include &lt;linux/fs.h&gt;		/* VFS related */</p>
+<p style="Normal" xid="5" props="text-align:left; dom-dir:ltr">#include &lt;linux/ioctl.h&gt;	/* ioctl syscall */</p>
+<p style="Normal" xid="6" props="text-align:left; dom-dir:ltr">#include &lt;linux/errno.h&gt;	/* error codes */</p>
+<p style="Normal" xid="7" props="text-align:left; dom-dir:ltr">#include &lt;linux/types.h&gt;	/* dev_t number */</p>
+<p style="Normal" xid="8" props="text-align:left; dom-dir:ltr">#include &lt;linux/cdev.h&gt;		/* char device registration */</p>
+<p style="Normal" xid="9" props="text-align:left; dom-dir:ltr">#include &lt;linux/uaccess.h&gt;	/* copy_*_user functions */</p>
+<p style="Normal" xid="10" props="text-align:left; dom-dir:ltr">#include &lt;linux/pci.h&gt;		/* pci funcs and types */</p>
+<p style="Normal" xid="11"><c></c></p>
+<p style="Normal" xid="12" props="text-align:left; dom-dir:ltr">#include "../../include/ioctl_cmds.h"</p>
+<p style="Normal" xid="13"><c></c></p>
+<p style="Normal" xid="14" props="text-align:left; dom-dir:ltr">/* meta information */</p>
+<p style="Normal" xid="15"><c></c></p>
+<p style="Normal" xid="16" props="text-align:left; dom-dir:ltr">MODULE_LICENSE("GPL");</p>
+<p style="Normal" xid="17" props="text-align:left; dom-dir:ltr">MODULE_AUTHOR("mfbsouza");</p>
+<p style="Normal" xid="18" props="text-align:left; dom-dir:ltr">MODULE_DESCRIPTION("simple pci driver for DE2i-150 dev board");</p>
+<p style="Normal" xid="19"><c></c></p>
+<p style="Normal" xid="20" props="text-align:left; dom-dir:ltr">/* driver constants */</p>
+<p style="Normal" xid="21"><c></c></p>
+<p style="Normal" xid="22" props="text-align:left; dom-dir:ltr">#define DRIVER_NAME      "my_driver"</p>
+<p style="Normal" xid="23" props="text-align:left; dom-dir:ltr">#define FILE_NAME        "mydev"</p>
+<p style="Normal" xid="24" props="text-align:left; dom-dir:ltr">#define DRIVER_CLASS     "MyModuleClass"</p>
+<p style="Normal" xid="25" props="text-align:left; dom-dir:ltr">#define MY_PCI_VENDOR_ID  0x1172</p>
+<p style="Normal" xid="26" props="text-align:left; dom-dir:ltr">#define MY_PCI_DEVICE_ID  0x0004</p>
+<p style="Normal" xid="27"><c></c></p>
+<p style="Normal" xid="28" props="text-align:left; dom-dir:ltr">/* lkm entry and exit functions */</p>
+<p style="Normal" xid="29"><c></c></p>
+<p style="Normal" xid="30" props="text-align:left; dom-dir:ltr">static int  __init my_init (void);</p>
+<p style="Normal" xid="31" props="text-align:left; dom-dir:ltr">static void __exit my_exit (void);</p>
+<p style="Normal" xid="32"><c></c></p>
+<p style="Normal" xid="33" props="text-align:left; dom-dir:ltr">/* char device system calls */</p>
+<p style="Normal" xid="34"><c></c></p>
+<p style="Normal" xid="35" props="text-align:left; dom-dir:ltr">static int	my_open   (struct inode*, struct file*);</p>
+<p style="Normal" xid="36" props="text-align:left; dom-dir:ltr">static int 	my_close  (struct inode*, struct file*);</p>
+<p style="Normal" xid="37" props="text-align:left; dom-dir:ltr">static ssize_t 	my_read   (struct file*, char __user*, size_t, loff_t*);</p>
+<p style="Normal" xid="38" props="text-align:left; dom-dir:ltr">static ssize_t 	my_write  (struct file*, const char __user*, size_t, loff_t*);</p>
+<p style="Normal" xid="39" props="text-align:left; dom-dir:ltr">static long int	my_ioctl  (struct file*, unsigned int, unsigned long);</p>
+<p style="Normal" xid="40"><c></c></p>
+<p style="Normal" xid="41" props="text-align:left; dom-dir:ltr">/* pci functions */</p>
+<p style="Normal" xid="42"><c></c></p>
+<p style="Normal" xid="43" props="text-align:left; dom-dir:ltr">static int  __init my_pci_probe  (struct pci_dev *dev, const struct pci_device_id *id);</p>
+<p style="Normal" xid="44" props="text-align:left; dom-dir:ltr">static void __exit my_pci_remove (struct pci_dev *dev);</p>
+<p style="Normal" xid="45"><c></c></p>
+<p style="Normal" xid="46" props="text-align:left; dom-dir:ltr">/* pci ids which this driver supports */</p>
+<p style="Normal" xid="47"><c></c></p>
+<p style="Normal" xid="48" props="text-align:left; dom-dir:ltr">static struct pci_device_id pci_ids[] = {</p>
+<p style="Normal" xid="49" props="text-align:left; dom-dir:ltr">	{PCI_DEVICE(MY_PCI_VENDOR_ID, MY_PCI_DEVICE_ID), },</p>
+<p style="Normal" xid="50">	{0, }</p>
+<p style="Normal" xid="51">};</p>
+<p style="Normal" xid="52" props="text-align:left; dom-dir:ltr">MODULE_DEVICE_TABLE(pci, pci_ids);</p>
+<p style="Normal" xid="53"><c></c></p>
+<p style="Normal" xid="54" props="text-align:left; dom-dir:ltr">/* device file operations */</p>
+<p style="Normal" xid="55"><c></c></p>
+<p style="Normal" xid="56" props="text-align:left; dom-dir:ltr">static struct file_operations fops = {</p>
+<p style="Normal" xid="57" props="text-align:left; dom-dir:ltr">	.owner = THIS_MODULE,</p>
+<p style="Normal" xid="58" props="text-align:left; dom-dir:ltr">	.read = my_read,</p>
+<p style="Normal" xid="59" props="text-align:left; dom-dir:ltr">	.write = my_write,</p>
+<p style="Normal" xid="60" props="text-align:left; dom-dir:ltr">	.unlocked_ioctl	= my_ioctl,</p>
+<p style="Normal" xid="61" props="text-align:left; dom-dir:ltr">	.open = my_open,</p>
+<p style="Normal" xid="62" props="text-align:left; dom-dir:ltr">	.release = my_close</p>
+<p style="Normal" xid="63">};</p>
+<p style="Normal" xid="64"><c></c></p>
+<p style="Normal" xid="65" props="text-align:left; dom-dir:ltr">/* pci driver operations */</p>
+<p style="Normal" xid="66"><c></c></p>
+<p style="Normal" xid="67" props="text-align:left; dom-dir:ltr">static struct pci_driver pci_ops = {</p>
+<p style="Normal" xid="68" props="text-align:left; dom-dir:ltr">	.name = DRIVER_NAME,</p>
+<p style="Normal" xid="69" props="text-align:left; dom-dir:ltr">	.id_table = pci_ids,</p>
+<p style="Normal" xid="70" props="text-align:left; dom-dir:ltr">	.probe = my_pci_probe,</p>
+<p style="Normal" xid="71" props="text-align:left; dom-dir:ltr">	.remove = my_pci_remove</p>
+<p style="Normal" xid="72">};</p>
+<p style="Normal" xid="73"><c></c></p>
+<p style="Normal" xid="74" props="text-align:left; dom-dir:ltr">/* variables for char device registration to kernel */</p>
+<p style="Normal" xid="75"><c></c></p>
+<p style="Normal" xid="76" props="text-align:left; dom-dir:ltr">static dev_t my_device_nbr;</p>
+<p style="Normal" xid="77" props="text-align:left; dom-dir:ltr">static struct class* my_class;</p>
+<p style="Normal" xid="78" props="text-align:left; dom-dir:ltr">static struct cdev my_device;</p>
+<p style="Normal" xid="79"><c></c></p>
+<p style="Normal" xid="80" props="text-align:left; dom-dir:ltr">/* --- device data --- */</p>
+<p style="Normal" xid="81" props="text-align:left; dom-dir:ltr">/* PCI BARs mapped to virtual space */</p>
+<p style="Normal" xid="82" props="text-align:left; dom-dir:ltr">static void __iomem* bar0_mmio = NULL;</p>
+<p style="Normal" xid="83"><c></c></p>
+<p style="Normal" xid="84" props="text-align:left; dom-dir:ltr">/* MMIO pointers used in write() read() ioctl() */</p>
+<p style="Normal" xid="85" props="text-align:left; dom-dir:ltr">static void __iomem* read_pointer  = NULL;</p>
+<p style="Normal" xid="86" props="text-align:left; dom-dir:ltr">static void __iomem* write_pointer = NULL;</p>
+<p style="Normal" xid="87"><c></c></p>
+<p style="Normal" xid="88" props="text-align:left; dom-dir:ltr">/* peripherals names for debugging in dmesg */</p>
+<p style="Normal" xid="89" props="text-align:left; dom-dir:ltr">static const char* peripheral[] = {</p>
+<p style="Normal" xid="90" props="text-align:left; dom-dir:ltr">	"switches",</p>
+<p style="Normal" xid="91" props="text-align:left; dom-dir:ltr">	"p_buttons",</p>
+<p style="Normal" xid="92" props="text-align:left; dom-dir:ltr">	"display_l",</p>
+<p style="Normal" xid="93" props="text-align:left; dom-dir:ltr">	"display_r",</p>
+<p style="Normal" xid="94" props="text-align:left; dom-dir:ltr">	"green_leds",</p>
+<p style="Normal" xid="95" props="text-align:left; dom-dir:ltr">	"red_leds"</p>
+<p style="Normal" xid="96">};</p>
+<p style="Normal" xid="97"><c></c></p>
+<p style="Normal" xid="98" props="text-align:left; dom-dir:ltr">enum perf_names_idx {</p>
+<p style="Normal" xid="99" props="text-align:left; dom-dir:ltr">	IDX_SWITCH = 0,</p>
+<p style="Normal" xid="100" props="text-align:left; dom-dir:ltr">	IDX_PBUTTONS,</p>
+<p style="Normal" xid="101" props="text-align:left; dom-dir:ltr">	IDX_DISPLAYL,</p>
+<p style="Normal" xid="102" props="text-align:left; dom-dir:ltr">	IDX_DISPLAYR,</p>
+<p style="Normal" xid="103" props="text-align:left; dom-dir:ltr">	IDX_GREENLED,</p>
+<p style="Normal" xid="104" props="text-align:left; dom-dir:ltr">	IDX_REDLED</p>
+<p style="Normal" xid="105">};</p>
+<p style="Normal" xid="106" props="text-align:left; dom-dir:ltr">static int wr_name_idx = IDX_DISPLAYR;</p>
+<p style="Normal" xid="107" props="text-align:left; dom-dir:ltr">static int rd_name_idx = IDX_SWITCH;</p>
+<p style="Normal" xid="108"><c></c></p>
+<p style="Normal" xid="109" props="text-align:left; dom-dir:ltr">/* functions implementation */</p>
+<p style="Normal" xid="110"><c></c></p>
+<p style="Normal" xid="111" props="text-align:left; dom-dir:ltr">static int __init my_init(void)</p>
+<p style="Normal" xid="112">{</p>
+<p style="Normal" xid="113" props="text-align:left; dom-dir:ltr">	printk("my_driver: loaded to the kernel\n");</p>
+<p style="Normal" xid="114"><c></c></p>
+<p style="Normal" xid="115" props="text-align:left; dom-dir:ltr">	/* 0. register pci driver to the kernel */</p>
+<p style="Normal" xid="116" props="text-align:left; dom-dir:ltr">	if (pci_register_driver(&amp;pci_ops) &lt; 0) {</p>
+<p style="Normal" xid="117" props="text-align:left; dom-dir:ltr">		printk("my_driver: PCI driver registration failed\n");</p>
+<p style="Normal" xid="118" props="text-align:left; dom-dir:ltr">		return -EAGAIN;</p>
+<p style="Normal" xid="119">	}</p>
+<p style="Normal" xid="120"><c></c></p>
+<p style="Normal" xid="121" props="text-align:left; dom-dir:ltr">	/* 1. request the kernel for a device number */</p>
+<p style="Normal" xid="122" props="text-align:left; dom-dir:ltr">	if (alloc_chrdev_region(&amp;my_device_nbr, 0, 1, DRIVER_NAME) &lt; 0) {</p>
+<p style="Normal" xid="123" props="text-align:left; dom-dir:ltr">		printk("my_driver: device number could not be allocated!\n");</p>
+<p style="Normal" xid="124" props="text-align:left; dom-dir:ltr">		return -EAGAIN;</p>
+<p style="Normal" xid="125">	}</p>
+<p style="Normal" xid="126" props="text-align:left; dom-dir:ltr">	printk("my_driver: device number %d was registered!\n", MAJOR(my_device_nbr));</p>
+<p style="Normal" xid="127"><c></c></p>
+<p style="Normal" xid="128" props="text-align:left; dom-dir:ltr">	/* 2. create class : appears at /sys/class */</p>
+<p style="Normal" xid="129" props="text-align:left; dom-dir:ltr">	if ((my_class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {</p>
+<p style="Normal" xid="130" props="text-align:left; dom-dir:ltr">		printk("my_driver: device class count not be created!\n");</p>
+<p style="Normal" xid="131" props="text-align:left; dom-dir:ltr">		goto ClassError;</p>
+<p style="Normal" xid="132">	}</p>
+<p style="Normal" xid="133"><c></c></p>
+<p style="Normal" xid="134" props="text-align:left; dom-dir:ltr">	/* 3. associate the cdev with a set of file operations */</p>
+<p style="Normal" xid="135" props="text-align:left; dom-dir:ltr">	cdev_init(&amp;my_device, &amp;fops);</p>
+<p style="Normal" xid="136"><c></c></p>
+<p style="Normal" xid="137" props="text-align:left; dom-dir:ltr">	/* 4. create the device node */</p>
+<p style="Normal" xid="138" props="text-align:left; dom-dir:ltr">	if (device_create(my_class, NULL, my_device_nbr, NULL, FILE_NAME) == NULL) {</p>
+<p style="Normal" xid="139" props="text-align:left; dom-dir:ltr">		printk("my_driver: can not create device file!\n");</p>
+<p style="Normal" xid="140" props="text-align:left; dom-dir:ltr">		goto FileError;</p>
+<p style="Normal" xid="141">	}</p>
+<p style="Normal" xid="142"><c></c></p>
+<p style="Normal" xid="143" props="text-align:left; dom-dir:ltr">	/* 5. now make the device live for the users to access */</p>
+<p style="Normal" xid="144" props="text-align:left; dom-dir:ltr">	if (cdev_add(&amp;my_device, my_device_nbr, 1) == -1){</p>
+<p style="Normal" xid="145" props="text-align:left; dom-dir:ltr">		printk("my_driver: registering of device to kernel failed!\n");</p>
+<p style="Normal" xid="146" props="text-align:left; dom-dir:ltr">		goto AddError;</p>
+<p style="Normal" xid="147">	}</p>
+<p style="Normal" xid="148"><c></c></p>
+<p style="Normal" xid="149" props="text-align:left; dom-dir:ltr">	return 0;</p>
+<p style="Normal" xid="150"><c></c></p>
+<p style="Normal" xid="151" props="text-align:left; dom-dir:ltr">AddError:</p>
+<p style="Normal" xid="152" props="text-align:left; dom-dir:ltr">	device_destroy(my_class, my_device_nbr);</p>
+<p style="Normal" xid="153" props="text-align:left; dom-dir:ltr">FileError:</p>
+<p style="Normal" xid="154" props="text-align:left; dom-dir:ltr">	class_destroy(my_class);</p>
+<p style="Normal" xid="155" props="text-align:left; dom-dir:ltr">ClassError:</p>
+<p style="Normal" xid="156" props="text-align:left; dom-dir:ltr">	unregister_chrdev(my_device_nbr, DRIVER_NAME);</p>
+<p style="Normal" xid="157" props="text-align:left; dom-dir:ltr">	pci_unregister_driver(&amp;pci_ops);</p>
+<p style="Normal" xid="158" props="text-align:left; dom-dir:ltr">	return -EAGAIN;</p>
+<p style="Normal" xid="159">}</p>
+<p style="Normal" xid="160"><c></c></p>
+<p style="Normal" xid="161" props="text-align:left; dom-dir:ltr">static void __exit my_exit(void)</p>
+<p style="Normal" xid="162">{</p>
+<p style="Normal" xid="163" props="text-align:left; dom-dir:ltr">	cdev_del(&amp;my_device);</p>
+<p style="Normal" xid="164" props="text-align:left; dom-dir:ltr">	device_destroy(my_class, my_device_nbr);</p>
+<p style="Normal" xid="165" props="text-align:left; dom-dir:ltr">	class_destroy(my_class);</p>
+<p style="Normal" xid="166" props="text-align:left; dom-dir:ltr">	unregister_chrdev(my_device_nbr, DRIVER_NAME);</p>
+<p style="Normal" xid="167" props="text-align:left; dom-dir:ltr">	pci_unregister_driver(&amp;pci_ops);</p>
+<p style="Normal" xid="168" props="text-align:left; dom-dir:ltr">	printk("my_driver: goodbye kernel!\n");</p>
+<p style="Normal" xid="169">}</p>
+<p style="Normal" xid="170"><c></c></p>
+<p style="Normal" xid="171" props="text-align:left; dom-dir:ltr">static int my_open(struct inode* inode, struct file* filp)</p>
+<p style="Normal" xid="172">{</p>
+<p style="Normal" xid="173" props="text-align:left; dom-dir:ltr">	printk("my_driver: open was called\n");</p>
+<p style="Normal" xid="174" props="text-align:left; dom-dir:ltr">	return 0;</p>
+<p style="Normal" xid="175">}</p>
+<p style="Normal" xid="176"><c></c></p>
+<p style="Normal" xid="177" props="text-align:left; dom-dir:ltr">static int my_close(struct inode* inode, struct file* filp)</p>
+<p style="Normal" xid="178">{</p>
+<p style="Normal" xid="179" props="text-align:left; dom-dir:ltr">	printk("my_driver: close was called\n");</p>
+<p style="Normal" xid="180" props="text-align:left; dom-dir:ltr">	return 0;</p>
+<p style="Normal" xid="181">}</p>
+<p style="Normal" xid="182"><c></c></p>
+<p style="Normal" xid="183" props="text-align:left; dom-dir:ltr">static ssize_t my_read(struct file* filp, char __user* buf, size_t count, loff_t* f_pos)</p>
+<p style="Normal" xid="184">{</p>
+<p style="Normal" xid="185" props="text-align:left; dom-dir:ltr">	ssize_t retval = 0;</p>
+<p style="Normal" xid="186" props="text-align:left; dom-dir:ltr">	int to_cpy = 0;</p>
+<p style="Normal" xid="187" props="text-align:left; dom-dir:ltr">	static unsigned int temp_read = 0;</p>
+<p style="Normal" xid="188"><c></c></p>
+<p style="Normal" xid="189" props="text-align:left; dom-dir:ltr">	/* check if the read_pointer pointer is set */</p>
+<p style="Normal" xid="190" props="text-align:left; dom-dir:ltr">	if (read_pointer == NULL) {</p>
+<p style="Normal" xid="191" props="text-align:left; dom-dir:ltr">		printk("my_driver: trying to read to a device region not set yet\n");</p>
+<p style="Normal" xid="192" props="text-align:left; dom-dir:ltr">		return -ECANCELED;</p>
+<p style="Normal" xid="193">	}</p>
+<p style="Normal" xid="194"><c></c></p>
+<p style="Normal" xid="195" props="text-align:left; dom-dir:ltr">	/* read from the device */</p>
+<p style="Normal" xid="196" props="text-align:left; dom-dir:ltr">	temp_read = ioread32(read_pointer);</p>
+<p style="Normal" xid="197" props="text-align:left; dom-dir:ltr">	printk("my_driver: red 0x%X from the %s\n", temp_read, peripheral[rd_name_idx]);</p>
+<p style="Normal" xid="198"><c></c></p>
+<p style="Normal" xid="199" props="text-align:left; dom-dir:ltr">	/* get amount of bytes to copy to user */</p>
+<p style="Normal" xid="200" props="text-align:left; dom-dir:ltr">	to_cpy = (count &lt;= sizeof(temp_read)) ? count : sizeof(temp_read);</p>
+<p style="Normal" xid="201"><c></c></p>
+<p style="Normal" xid="202" props="text-align:left; dom-dir:ltr">	/* copy data to user */</p>
+<p style="Normal" xid="203" props="text-align:left; dom-dir:ltr">	retval = to_cpy - copy_to_user(buf, &amp;temp_read, to_cpy);</p>
+<p style="Normal" xid="204"><c></c></p>
+<p style="Normal" xid="205" props="text-align:left; dom-dir:ltr">	return retval;</p>
+<p style="Normal" xid="206">}</p>
+<p style="Normal" xid="207"><c></c></p>
+<p style="Normal" xid="208" props="text-align:left; dom-dir:ltr">static ssize_t my_write(struct file* filp, const char __user* buf, size_t count, loff_t* f_pos)</p>
+<p style="Normal" xid="209">{</p>
+<p style="Normal" xid="210" props="text-align:left; dom-dir:ltr">	ssize_t retval = 0;</p>
+<p style="Normal" xid="211" props="text-align:left; dom-dir:ltr">	int to_cpy = 0;</p>
+<p style="Normal" xid="212" props="text-align:left; dom-dir:ltr">	static unsigned int temp_write = 0;</p>
+<p style="Normal" xid="213"><c></c></p>
+<p style="Normal" xid="214" props="text-align:left; dom-dir:ltr">	/* check if the write_pointer pointer is set */</p>
+<p style="Normal" xid="215" props="text-align:left; dom-dir:ltr">	if (write_pointer == NULL) {</p>
+<p style="Normal" xid="216" props="text-align:left; dom-dir:ltr">		printk("my_driver: trying to write to a device region not set yet\n");</p>
+<p style="Normal" xid="217" props="text-align:left; dom-dir:ltr">		return -ECANCELED;</p>
+<p style="Normal" xid="218">	}</p>
+<p style="Normal" xid="219"><c></c></p>
+<p style="Normal" xid="220" props="text-align:left; dom-dir:ltr">	/* get amount of bytes to copy from user */</p>
+<p style="Normal" xid="221" props="text-align:left; dom-dir:ltr">	to_cpy = (count &lt;= sizeof(temp_write)) ? count : sizeof(temp_write);</p>
+<p style="Normal" xid="222"><c></c></p>
+<p style="Normal" xid="223" props="text-align:left; dom-dir:ltr">	/* copy data from user */</p>
+<p style="Normal" xid="224" props="text-align:left; dom-dir:ltr">	retval = to_cpy - copy_from_user(&amp;temp_write, buf, to_cpy);</p>
+<p style="Normal" xid="225"><c></c></p>
+<p style="Normal" xid="226" props="text-align:left; dom-dir:ltr">	/* send to device */</p>
+<p style="Normal" xid="227" props="text-align:left; dom-dir:ltr">	iowrite32(temp_write, write_pointer);</p>
+<p style="Normal" xid="228" props="text-align:left; dom-dir:ltr">	printk("my_writer: wrote 0x%X to the %s\n", temp_write, peripheral[wr_name_idx]);</p>
+<p style="Normal" xid="229"><c></c></p>
+<p style="Normal" xid="230" props="text-align:left; dom-dir:ltr">	return retval;</p>
+<p style="Normal" xid="231">}</p>
+<p style="Normal" xid="232"><c></c></p>
+<p style="Normal" xid="233" props="text-align:left; dom-dir:ltr">static long int my_ioctl(struct file*, unsigned int cmd, unsigned long arg)</p>
+<p style="Normal" xid="234">{</p>
+<p style="Normal" xid="235" props="text-align:left; dom-dir:ltr">	switch(cmd){</p>
+<p style="Normal" xid="236" props="text-align:left; dom-dir:ltr">	case RD_SWITCHES:</p>
+<p style="Normal" xid="237" props="text-align:left; dom-dir:ltr">		read_pointer = bar0_mmio + 0xC080; //TODO: update offset</p>
+<p style="Normal" xid="238" props="text-align:left; dom-dir:ltr">		rd_name_idx = IDX_SWITCH;</p>
+<p style="Normal" xid="239" props="text-align:left; dom-dir:ltr">		break;</p>
+<p style="Normal" xid="240" props="text-align:left; dom-dir:ltr">	case RD_PBUTTONS:</p>
+<p style="Normal" xid="241" props="text-align:left; dom-dir:ltr">		read_pointer = bar0_mmio + 0xC0A0; //TODO: update offset</p>
+<p style="Normal" xid="242" props="text-align:left; dom-dir:ltr">		rd_name_idx = IDX_PBUTTONS;</p>
+<p style="Normal" xid="243" props="text-align:left; dom-dir:ltr">		break;</p>
+<p style="Normal" xid="244" props="text-align:left; dom-dir:ltr">	case WR_L_DISPLAY:</p>
+<p style="Normal" xid="245" props="text-align:left; dom-dir:ltr">		write_pointer = bar0_mmio + 0xC020; //TODO: update offset</p>
+<p style="Normal" xid="246" props="text-align:left; dom-dir:ltr">		wr_name_idx = IDX_DISPLAYL;</p>
+<p style="Normal" xid="247" props="text-align:left; dom-dir:ltr">		break;</p>
+<p style="Normal" xid="248" props="text-align:left; dom-dir:ltr">	case WR_R_DISPLAY:</p>
+<p style="Normal" xid="249" props="text-align:left; dom-dir:ltr">		write_pointer = bar0_mmio + 0xC000; //TODO: update offset</p>
+<p style="Normal" xid="250" props="text-align:left; dom-dir:ltr">		wr_name_idx = IDX_DISPLAYR;</p>
+<p style="Normal" xid="251" props="text-align:left; dom-dir:ltr">		break;</p>
+<p style="Normal" xid="252" props="text-align:left; dom-dir:ltr">	case WR_RED_LEDS:</p>
+<p style="Normal" xid="253" props="text-align:left; dom-dir:ltr">		write_pointer = bar0_mmio + 0xC040; //TODO: update offset</p>
+<p style="Normal" xid="254" props="text-align:left; dom-dir:ltr">		wr_name_idx = IDX_DISPLAYR;</p>
+<p style="Normal" xid="255" props="text-align:left; dom-dir:ltr">		break;</p>
+<p style="Normal" xid="256" props="text-align:left; dom-dir:ltr">	case WR_GREEN_LEDS:</p>
+<p style="Normal" xid="257" props="text-align:left; dom-dir:ltr">		write_pointer = bar0_mmio + 0xC060; //TODO: update offset</p>
+<p style="Normal" xid="258" props="text-align:left; dom-dir:ltr">		wr_name_idx = IDX_DISPLAYR;</p>
+<p style="Normal" xid="259" props="text-align:left; dom-dir:ltr">		break;</p>
+<p style="Normal" xid="260" props="text-align:left; dom-dir:ltr">	default:</p>
+<p style="Normal" xid="261" props="text-align:left; dom-dir:ltr">		printk("my_driver: unknown ioctl command: 0x%X\n", cmd);</p>
+<p style="Normal" xid="262">	}</p>
+<p style="Normal" xid="263" props="text-align:left; dom-dir:ltr">	return 0;</p>
+<p style="Normal" xid="264">}</p>
+<p style="Normal" xid="265"><c></c></p>
+<p style="Normal" xid="266" props="text-align:left; dom-dir:ltr">static int __init my_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)</p>
+<p style="Normal" xid="267">{</p>
+<p style="Normal" xid="268" props="text-align:left; dom-dir:ltr">	unsigned short vendor, device;</p>
+<p style="Normal" xid="269" props="text-align:left; dom-dir:ltr">	unsigned char rev;</p>
+<p style="Normal" xid="270" props="text-align:left; dom-dir:ltr">	unsigned int bar_value;</p>
+<p style="Normal" xid="271" props="text-align:left; dom-dir:ltr">	unsigned long bar_len;</p>
+<p style="Normal" xid="272"><c></c></p>
+<p style="Normal" xid="273" props="text-align:left; dom-dir:ltr">	/* enable the device */</p>
+<p style="Normal" xid="274" props="text-align:left; dom-dir:ltr">	if (pci_enable_device(dev) &lt; 0) {</p>
+<p style="Normal" xid="275" props="text-align:left; dom-dir:ltr">		printk("my_driver: Could not enable the PCI device!\n");</p>
+<p style="Normal" xid="276" props="text-align:left; dom-dir:ltr">		return -EBUSY;</p>
+<p style="Normal" xid="277">	}</p>
+<p style="Normal" xid="278" props="text-align:left; dom-dir:ltr">	printk("my_driver: PCI device enabled\n");</p>
+<p style="Normal" xid="279"><c></c></p>
+<p style="Normal" xid="280" props="text-align:left; dom-dir:ltr">	/* read some info from the PCI configuration space */</p>
+<p style="Normal" xid="281" props="text-align:left; dom-dir:ltr">	pci_read_config_word(dev, PCI_VENDOR_ID, &amp;vendor);</p>
+<p style="Normal" xid="282" props="text-align:left; dom-dir:ltr">	pci_read_config_word(dev, PCI_DEVICE_ID, &amp;device);</p>
+<p style="Normal" xid="283" props="text-align:left; dom-dir:ltr">	pci_read_config_byte(dev, PCI_REVISION_ID, &amp;rev);</p>
+<p style="Normal" xid="284" props="text-align:left; dom-dir:ltr">	printk("my_driver: PCI device - Vendor 0x%X Device 0x%X Rev 0x%X\n", vendor, device, rev);</p>
+<p style="Normal" xid="285"><c></c></p>
+<p style="Normal" xid="286" props="text-align:left; dom-dir:ltr">	/* read info about the PCI device BAR0 */</p>
+<p style="Normal" xid="287" props="text-align:left; dom-dir:ltr">	pci_read_config_dword(dev, 0x10, &amp;bar_value);</p>
+<p style="Normal" xid="288" props="text-align:left; dom-dir:ltr">	bar_len = pci_resource_len(dev, 0);</p>
+<p style="Normal" xid="289" props="text-align:left; dom-dir:ltr">	printk("my_driver: PCI device - BAR0 =&gt; 0x%X with length of %ld Kbytes\n", bar_value, bar_len/1024);</p>
+<p style="Normal" xid="290"><c></c></p>
+<p style="Normal" xid="291" props="text-align:left; dom-dir:ltr">	/* mark the PCI BAR0 region as reserved to this driver */</p>
+<p style="Normal" xid="292" props="text-align:left; dom-dir:ltr">	if (pci_request_region(dev, 0, DRIVER_NAME) != 0) {</p>
+<p style="Normal" xid="293" props="text-align:left; dom-dir:ltr">		printk("my_driver: PCI Error - PCI BAR0 region already in use!\n");</p>
+<p style="Normal" xid="294" props="text-align:left; dom-dir:ltr">		pci_disable_device(dev);</p>
+<p style="Normal" xid="295" props="text-align:left; dom-dir:ltr">		return -EBUSY;</p>
+<p style="Normal" xid="296">	}</p>
+<p style="Normal" xid="297"><c></c></p>
+<p style="Normal" xid="298" props="text-align:left; dom-dir:ltr">	/* map the BAR0 Physical address space to virtual space */</p>
+<p style="Normal" xid="299" props="text-align:left; dom-dir:ltr">	bar0_mmio = pci_iomap(dev, 0, bar_len);</p>
+<p style="Normal" xid="300"><c></c></p>
+<p style="Normal" xid="301" props="text-align:left; dom-dir:ltr">	/* initialize a default peripheral read and write pointer */</p>
+<p style="Normal" xid="302" props="text-align:left; dom-dir:ltr">	write_pointer = bar0_mmio + 0xC000; //TODO: update offset</p>
+<p style="Normal" xid="303" props="text-align:left; dom-dir:ltr">	read_pointer  = bar0_mmio + 0xC080; //TODO: update offset</p>
+<p style="Normal" xid="304"><c></c></p>
+<p style="Normal" xid="305" props="text-align:left; dom-dir:ltr">	return 0;</p>
+<p style="Normal" xid="306">}</p>
+<p style="Normal" xid="307"><c></c></p>
+<p style="Normal" xid="308" props="text-align:left; dom-dir:ltr">static void __exit my_pci_remove(struct pci_dev *dev)</p>
+<p style="Normal" xid="309">{</p>
+<p style="Normal" xid="310" props="text-align:left; dom-dir:ltr">	read_pointer = NULL;</p>
+<p style="Normal" xid="311" props="text-align:left; dom-dir:ltr">	write_pointer = NULL;</p>
+<p style="Normal" xid="312"><c></c></p>
+<p style="Normal" xid="313" props="text-align:left; dom-dir:ltr">	/* remove the IO mapping done in probe func */</p>
+<p style="Normal" xid="314" props="text-align:left; dom-dir:ltr">	pci_iounmap(dev, bar0_mmio);</p>
+<p style="Normal" xid="315"><c></c></p>
+<p style="Normal" xid="316" props="text-align:left; dom-dir:ltr">	/* disable the PCI device */</p>
+<p style="Normal" xid="317" props="text-align:left; dom-dir:ltr">	pci_disable_device(dev);</p>
+<p style="Normal" xid="318"><c></c></p>
+<p style="Normal" xid="319" props="text-align:left; dom-dir:ltr">	/* unmark device PCI BAR0 as reserved */</p>
+<p style="Normal" xid="320" props="text-align:left; dom-dir:ltr">	pci_release_region(dev, 0);</p>
+<p style="Normal" xid="321"><c></c></p>
+<p style="Normal" xid="322" props="text-align:left; dom-dir:ltr">	printk("my_driver: PCI Device - Disabled and BAR0 Released");</p>
+<p style="Normal" xid="323">}</p>
+<p style="Normal" xid="324"><c></c></p>
+<p style="Normal" xid="325" props="text-align:left; dom-dir:ltr">module_init(my_init);</p>
+<p style="Normal" xid="326" props="text-align:left; dom-dir:ltr">module_exit(my_exit);</p>
+<p style="Normal" xid="327"></p>
+</section>
+</abiword>
