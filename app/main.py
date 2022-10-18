@@ -274,10 +274,10 @@ def game():
                 lose()
 
         level += 1
-        if level % 2 == 0:
+        if level % 2 == 0 and buttonLevel < 20:
             buttonLevel += 1
 
-        if level % 4 == 0:
+        if level % 4 == 0 and qtdSwitches < 10:
             qtdSwitches += 1
 
 
